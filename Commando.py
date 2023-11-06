@@ -22,8 +22,18 @@ def execute_command(command):
         update_command_history()
 
         command_entry.delete(0, tk.END)
+
+        # Display the output in the Text widget
+        output_text.config(state=tk.NORMAL)
+        output_text.insert(tk.END, result)
+        output_text.config(state=tk.DISABLED)
     except subprocess.CalledProcessError as e:
         result = f"Error: {e.output}"
+
+        # Display the error in the Text widget
+        output_text.config(state=tk.NORMAL)
+        output_text.insert(tk.END, result)
+        output_text.config(state=tk.DISABLED)
 
     print(result)
 
@@ -39,13 +49,22 @@ def on_enter(event):
 
 def browse_folder():
     global selected_folder_path, current_directory_label
+
     folder_path = filedialog.askdirectory()
+
     if folder_path:
         selected_folder_path = folder_path
         folder_path_label.config(text="Selected Folder Path: " + selected_folder_path)
+
+        # Create or update the current_directory_label
+        if current_directory_label is None:
+            current_directory_label = tk.Label(root, text="Current Working Directory: " + os.getcwd(), bg=bg_color, fg=fg_color)
+            current_directory_label.pack()
+        else:
+            current_directory_label.config(text="Current Working Directory: " + os.getcwd())
+
         try:
             os.chdir(selected_folder_path)
-            current_directory_label.config(text="Current Working Directory: " + os.getcwd())
         except OSError as e:
             current_directory_label.config(text="Error: " + str(e))
 
@@ -59,16 +78,15 @@ def run_language(language):
     select_file()
     if selected_file_path:
         if language == "Python":
-            execute_command(f"python {selected_file_path}")
+            execute_command(f'python "{selected_file_path}"')
         elif language == "C":
             execute_command(f"gcc {selected_file_path} -o {selected_file_path}.exe && {selected_file_path}.exe")
         elif language == "C++":
             execute_command(f"g++ {selected_file_path} -o {selected_file_path}.exe && {selected_file_path}.exe")
         elif language == "Java":
-            execute_command(f"javac {selected_file_path}")
+            execute_command(f'javac "{selected_file_path}"')
             class_name = os.path.basename(selected_file_path).split('.')[0]
-            execute_command(f"java {class_name}")
-
+            execute_command(f'java "{class_name}"')
 
 def execute_git_command(command):
     try:
@@ -78,10 +96,10 @@ def execute_git_command(command):
         update_command_history()
 
         command_entry.delete(0, tk.END)
+        print(result)
     except subprocess.CalledProcessError as e:
         result = f"Error: {e.output}"
-
-    print(result)
+        print(result)
 
 def push_changes():
     try:
@@ -141,6 +159,7 @@ run_menu.add_command(label="C++", command=lambda: run_language("C++"))
 run_menu.add_command(label="Java", command=lambda: run_language("Java"))
 
 folder_path_label = tk.Label(root, text="Selected Folder Path: " + selected_folder_path, bg=bg_color, fg=fg_color)
+
 folder_path_label.pack()
 
 browse_folder_button = tk.Button(root, text="Browse Folder", command=browse_folder, bg=button_bg_color, fg=fg_color)
@@ -161,6 +180,11 @@ history_label.pack()
 history_text = tk.Text(root, height=10, width=50, state=tk.DISABLED, bg=bg_color, fg=fg_color)
 history_text.pack()
 
+# Create a Text widget for displaying the command output
+output_text = tk.Text(root, height=10, width=50, state=tk.DISABLED, bg=bg_color, fg=fg_color)
+output_text.pack()
+
 update_command_history()
 
+# Start the Tkinter main loop
 root.mainloop()
