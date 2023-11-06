@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['Commando.py'],
+    ['commando.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -21,7 +21,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='Commando',
+    name='commando',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
