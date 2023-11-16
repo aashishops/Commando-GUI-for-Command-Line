@@ -23,14 +23,14 @@ def execute_command(command):
 
         command_entry.delete(0, tk.END)
 
-        # Display the output in the Text widget
+      
         output_text.config(state=tk.NORMAL)
         output_text.insert(tk.END, result)
         output_text.config(state=tk.DISABLED)
     except subprocess.CalledProcessError as e:
         result = f"Error: {e.output}"
 
-        # Display the error in the Text widget
+     
         output_text.config(state=tk.NORMAL)
         output_text.insert(tk.END, result)
         output_text.config(state=tk.DISABLED)
@@ -56,7 +56,8 @@ def browse_folder():
         selected_folder_path = folder_path
         folder_path_label.config(text="Selected Folder Path: " + selected_folder_path)
 
-        # Create or update the current_directory_label
+        
+
         if current_directory_label is None:
             current_directory_label = tk.Label(root, text="Current Working Directory: " + os.getcwd(), bg=bg_color, fg=fg_color)
             current_directory_label.pack()
@@ -180,11 +181,11 @@ history_label.pack()
 history_text = tk.Text(root, height=10, width=50, state=tk.DISABLED, bg=bg_color, fg=fg_color)
 history_text.pack()
 
-# Create a Text widget for displaying the command output
+
 output_text = tk.Text(root, height=10, width=50, state=tk.DISABLED, bg=bg_color, fg=fg_color)
 output_text.pack()
 
 update_command_history()
 
-# Start the Tkinter main loop
+
 root.mainloop()
